@@ -125,12 +125,6 @@ section[tabindex="-1"]:focus, section[tabindex="-1"]:focus-visible { outline: no
 }
 @keyframes arrive { from { opacity: 0.35; translate: 0 1.1rem; } }
 
-/* a soft cross-fade between pages, in browsers that support it */
-@media (prefers-reduced-motion: no-preference) {
-  @view-transition { navigation: auto; }
-  ::view-transition-group(root) { animation-duration: 0.2s; }
-}
-
 /* ---------- every screen size ---------- */
 /* text and spacing grow on very large monitors and TVs */
 html { font-size: clamp(100%, 0.5rem + 0.42vw, 175%); }

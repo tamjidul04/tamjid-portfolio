@@ -1,0 +1,6 @@
+{{/* Returns a smaller JPEG copy of a screenshot. Call with (dict "image" resource "width" 800). */}}
+{{ $image := .image }}
+{{ if and (ne $image.MediaType.SubType "svg") (gt $image.Width .width) }}
+  {{ $image = $image.Resize (printf "%dx jpg q82" .width) }}
+{{ end }}
+{{ return $image }}

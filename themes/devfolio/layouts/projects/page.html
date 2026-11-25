@@ -2,7 +2,7 @@
 <article class="section">
   <div class="wrap narrow">
     {{ partial "page-title.html" . }}
-    {{ with .Resources.GetMatch "featured*" }}<div class="banner"><img src="{{ .RelPermalink }}" alt=""></div>{{ end }}
+    {{ with .Resources.GetMatch "featured*" }}{{ $banner := partial "sized-image.html" (dict "image" . "width" 1200) }}<div class="banner"><img src="{{ $banner.RelPermalink }}" alt="" width="{{ $banner.Width }}" height="{{ $banner.Height }}"></div>{{ end }}
     <div class="prose">{{ .Content }}</div>
     {{ if or .Params.github .Params.demo }}
       <div class="actions actions--left">

@@ -93,7 +93,7 @@
       {{ range . }}
         <div class="stack__group" data-reveal>
           <h3>{{ .name }}</h3>
-          <ul>{{ range .items }}<li>{{ partial "icon.html" (.icon | default "code") }}{{ .name }}</li>{{ end }}</ul>
+          <ul>{{ range .items }}<li>{{ partial "tech-icon.html" (.icon | default "code") }}{{ .name }}</li>{{ end }}</ul>
         </div>
       {{ end }}
     </div>

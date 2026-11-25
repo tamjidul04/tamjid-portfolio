@@ -1,0 +1,10 @@
+{{- /* Colour brand icons load as separate, cached images so the page stays small.
+       Single-colour icons are written into the page so they follow the theme colour. */ -}}
+{{- $name := . -}}
+{{- $inline := slice "code" "github" "linkedin" "mail" -}}
+{{- $file := resources.Get (printf "icons/%s.svg" $name) -}}
+{{- if or (in $inline $name) (not $file) -}}
+{{- partial "icon.html" $name -}}
+{{- else -}}
+<span class="icon icon--{{ $name }}" aria-hidden="true"><img src="{{ $file.RelPermalink }}" alt="" width="32" height="32" loading="lazy" decoding="async"></span>
+{{- end -}}

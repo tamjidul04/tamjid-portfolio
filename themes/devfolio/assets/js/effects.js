@@ -222,6 +222,11 @@
     };
 
     var loop = function (time) {
+      if (root.classList.contains("is-scrolling")) { // rest while a menu scroll runs
+        previous = 0;
+        frame = requestAnimationFrame(loop);
+        return;
+      }
       if (tooSlow(time)) return goLite();
       frame = requestAnimationFrame(loop);
       if (last && time - last < FRAME - 2) return; // the background needs no more than 30fps

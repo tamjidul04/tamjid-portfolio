@@ -1,0 +1,15 @@
+{{- /* Speculation rules (Chrome, Edge and similar browsers): pages are built in the
+       background, so they open almost at once. Other browsers ignore this. */ -}}
+{{- $base := site.Home.RelPermalink -}}
+{{- /* any page of this site, as soon as the visitor points at or presses its link */ -}}
+{{- $onIntent := dict "where" (dict "and" (slice
+      (dict "href_matches" (printf "%s*" $base))
+      (dict "not" (dict "href_matches" (printf "%s*.pdf" $base)))
+    )) "eagerness" "moderate" -}}
+{{- $rules := slice $onIntent -}}
+{{- if .IsHome -}}
+  {{- /* the Contact page is prepared straight away */ -}}
+  {{- $rules = $rules | append (dict "urls" (slice ("contact/" | relURL)) "eagerness" "immediate") -}}
+{{- end -}}
+{{- /* the whole tag is built as text, so Hugo does not escape the quotation marks */ -}}
+{{ printf "<script type=\"speculationrules\">%s</script>" (dict "prerender" $rules | jsonify) | safeHTML }}

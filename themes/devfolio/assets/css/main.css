@@ -253,8 +253,7 @@ section[id] { scroll-margin-top: 4.5rem; }
 .contact-card .contact-card__email { color: var(--text); font-weight: 700; overflow-wrap: anywhere; }
 .contact-card .contact-card__email:hover { color: var(--primary-text); }
 @media (prefers-reduced-motion: no-preference) {
-  .motion .contact-page__inner > * { animation: rise 0.3s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
-  .motion .contact-card { animation-delay: 0.05s; }
+  .motion .contact-page__inner > * { animation: arrive 0.28s cubic-bezier(0.2, 0.7, 0.2, 1) backwards; }
   .motion .contact-card a { transition: color 0.2s ease, translate 0.2s ease; }
   .motion .contact-card a:hover { translate: 0.5rem 0; }
 }

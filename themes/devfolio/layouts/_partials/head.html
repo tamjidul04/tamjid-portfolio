@@ -12,6 +12,7 @@
 {{ with .OutputFormats.Get "rss" }}<link rel="alternate" type="application/rss+xml" href="{{ .RelPermalink }}" title="{{ site.Title }}">{{ end }}
 {{/* fetch the page the visitor is likely to open next, so it appears quickly */}}
 {{ if .IsHome }}<link rel="prefetch" href="{{ "contact/" | relURL }}">{{ else }}<link rel="prefetch" href="{{ site.Home.RelPermalink }}">{{ end }}
+{{ partial "speculation.html" . }}
 {{ if eq .Layout "contact" }}<link rel="preload" href="{{ "fonts/playfair-display.woff2" | relURL }}" as="font" type="font/woff2" crossorigin>{{ end }}
 <link rel="icon" href="{{ "favicon.svg" | relURL }}" type="image/svg+xml">
 
@@ -27,6 +28,16 @@
     } catch (e) {}
     try { saved = localStorage.getItem("theme"); } catch (e) {}
     if (saved) root.dataset.theme = saved;
+    // a page prepared in advance, or restored with the Back button, picks up the latest choices
+    var refresh = function () {
+      try {
+        var theme = localStorage.getItem("theme");
+        if (theme) root.dataset.theme = theme;
+        if (sessionStorage.getItem("lite")) root.classList.add("lite");
+      } catch (e) {}
+    };
+    document.addEventListener("prerenderingchange", refresh);
+    window.addEventListener("pageshow", refresh);
   })();
 </script>
 

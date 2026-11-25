@@ -1,0 +1,15 @@
+education:
+  - title: "B.Sc. in Computer Science and Engineering"
+    place: "Daffodil International University (DIU)"
+    period: "Currently studying"     # you can write your years, e.g. "2024 – Present"
+    points:
+      - "Current CGPA: 3.8"
+
+# To add jobs, clubs or activities, remove the # marks below and use real details.
+# An "Experience & Activities" column then appears beside Education.
+# experience:
+#   - title: "Your role"
+#     place: "Club or organisation"
+#     period: "Year – Year"
+#     points:
+#       - "What you did"

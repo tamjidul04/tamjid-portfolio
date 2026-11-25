@@ -1,0 +1,12 @@
+<ol class="timeline">
+  {{ range . }}
+    <li data-reveal>
+      <article>
+        <h4>{{ .title }}</h4>
+        <p class="org">{{ .place }}</p>
+        <p class="meta">{{ .period }}</p>
+        {{ with .points }}<ul>{{ range . }}<li>{{ . }}</li>{{ end }}</ul>{{ end }}
+      </article>
+    </li>
+  {{ end }}
+</ol>

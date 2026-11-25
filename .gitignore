@@ -1,0 +1,12 @@
+# build output
+public/
+resources/_gen/
+.hugo_build.lock
+
+# private backups: kept on this computer only
+_backup-*/
+
+# local settings and secrets
+.env
+.env.*
+.vercel/

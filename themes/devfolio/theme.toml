@@ -1,0 +1,5 @@
+name = "Devfolio"
+license = "MIT"
+description = "A dark-first, animated portfolio theme for developers and CS students."
+tags = ["portfolio", "developer", "student", "responsive", "dark mode", "blog"]
+min_version = "0.158.0"

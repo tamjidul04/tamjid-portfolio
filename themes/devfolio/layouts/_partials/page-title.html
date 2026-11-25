@@ -1,0 +1,9 @@
+<header class="title">
+  <h1>{{ .Title }}</h1>
+  {{ with .Description }}<p>{{ . }}</p>{{ end }}
+  {{ if .IsPage }}
+    {{ with .GetTerms "tags" }}
+      <ul class="tags tags--links">{{ range . }}<li><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></li>{{ end }}</ul>
+    {{ end }}
+  {{ end }}
+</header>

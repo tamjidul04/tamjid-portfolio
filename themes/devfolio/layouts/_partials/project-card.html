@@ -1,0 +1,25 @@
+<li data-reveal data-tags="{{ delimit (.Params.tags | default slice) "|" }}">
+  <article class="card">
+    <a class="card__media" href="{{ .RelPermalink }}" tabindex="-1" aria-hidden="true">
+      {{ with .Resources.GetMatch "featured*" }}
+        <img src="{{ .RelPermalink }}" alt="" loading="lazy">
+      {{ else }}
+        <div class="window">
+          <div class="window__bar"><i></i><i></i><i></i><span>{{ .Params.file | default "main.cpp" }}</span></div>
+          <pre>{{ .Params.snippet }}</pre>
+        </div>
+      {{ end }}
+    </a>
+    <div class="card__body">
+      <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+      <p>{{ .Description }}</p>
+      {{ with .Params.tags }}<ul class="tags">{{ range . }}<li>{{ . }}</li>{{ end }}</ul>{{ end }}
+      {{ if or .Params.github .Params.demo }}
+        <div class="card__links">
+          {{ with .Params.github }}<a href="{{ . }}" rel="noopener">{{ partial "icon.html" "github" }} Code</a>{{ end }}
+          {{ with .Params.demo }}<a href="{{ . }}" rel="noopener">{{ partial "icon.html" "external" }} Live demo</a>{{ end }}
+        </div>
+      {{ end }}
+    </div>
+  </article>
+</li>

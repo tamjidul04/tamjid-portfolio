@@ -1,0 +1,12 @@
+{{/* Builds search.json once and returns its URL. */}}
+{{ $entries := slice }}
+{{ range site.RegularPages }}
+  {{ $entries = $entries | append (dict
+    "title" .Title
+    "url" .RelPermalink
+    "summary" (.Description | default "")
+    "text" (printf "%s %s" (delimit (.Params.tags | default slice) " ") (.Plain | truncate 600))
+  ) }}
+{{ end }}
+{{ $file := resources.FromString "search.json" ($entries | jsonify) }}
+{{ return $file.RelPermalink }}

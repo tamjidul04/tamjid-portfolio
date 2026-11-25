@@ -1,0 +1,41 @@
+baseURL = "https://example.com/"
+locale = "en-us"
+title = "Md. Tamjidul Islam | CSE Student"
+theme = "devfolio"
+enableRobotsTXT = true
+
+[taxonomies]
+  tag = "tags"
+
+[params]
+  description = "Portfolio of Md. Tamjidul Islam, a Computer Science and Engineering student."
+  animations = true   # set to false to turn all animation off
+  animatedBackground = true   # moving network of dots behind the page
+  cursor = true               # animated arrow cursor for mouse users
+  resume = ""         # put your CV in /static and write e.g. "resume.pdf"
+
+[menus]
+  [[menus.main]]
+    name = "Projects"
+    url = "/#projects"
+    weight = 10
+  [[menus.main]]
+    name = "Achievements"
+    url = "/#achievements"
+    weight = 15
+  [[menus.main]]
+    name = "Skills"
+    url = "/#skills"
+    weight = 20
+  [[menus.main]]
+    name = "Education"
+    url = "/#experience"
+    weight = 30
+  [[menus.main]]
+    name = "Blog"
+    url = "/#blog"
+    weight = 40
+  [[menus.main]]
+    name = "Contact"
+    url = "/contact/"
+    weight = 50

@@ -1,0 +1,24 @@
+- name: "Languages"
+  items:
+    - { name: "C", icon: "c" }
+    - { name: "C++", icon: "cplusplus" }
+    - { name: "Java", icon: "java" }
+    - { name: "Python", icon: "python" }
+- name: "Web"
+  items:
+    - { name: "HTML", icon: "html5" }
+    - { name: "CSS", icon: "css3" }
+    - { name: "JavaScript", icon: "javascript" }
+    - { name: "React", icon: "react" }
+- name: "Tools"
+  items:
+    - { name: "Git", icon: "git" }
+    - { name: "GitHub", icon: "github" }
+    - { name: "Linux", icon: "linux" }
+    - { name: "VS Code", icon: "vscode" }
+- name: "CS Fundamentals"
+  items:
+    - { name: "Data Structures" }
+    - { name: "Algorithms" }
+    - { name: "OOP" }
+    - { name: "Databases", icon: "mysql" }

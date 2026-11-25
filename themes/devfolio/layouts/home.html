@@ -1,0 +1,159 @@
+{{ define "main" }}
+{{ $p := hugo.Data.profile }}
+
+<section class="hero">
+  <div class="wrap hero__inner">
+    <div class="avatar">
+      {{ $avatar := $p.avatar }}
+      {{ if not $avatar }}
+        {{ range slice "me.jpg" "me.jpeg" "me.png" "me.webp" }}
+          {{ if fileExists (printf "static/%s" .) }}{{ $avatar = . }}{{ end }}
+        {{ end }}
+      {{ end }}
+      {{ with $avatar }}
+        <img class="avatar__img" src="{{ partial "link.html" . }}" alt="Photo of {{ $p.name }}">
+      {{ else }}
+        <div class="avatar__img" aria-hidden="true">{{ $p.initials }}</div>
+      {{ end }}
+      {{ with $p.badge }}<span class="avatar__badge" aria-hidden="true">{{ . }}</span>{{ end }}
+    </div>
+    <p class="greeting">{{ .Params.greeting }}</p>
+    <h1>{{ $p.name }}</h1>
+    {{ with .Params.typing }}
+      <p class="tagline">
+        {{ .prefix }}
+        <span class="sr-only">{{ delimit .words ", " }}</span>
+        <span aria-hidden="true"><span class="tagline__typed" data-typed="{{ .words | jsonify }}">{{ index .words 0 }}</span><span class="tagline__cursor"></span></span>
+      </p>
+    {{ end }}
+    <p class="bio">{{ $p.bio }}</p>
+    <ul class="socials">
+      {{ range $p.links }}
+        <li><a href="{{ partial "link.html" .url }}" aria-label="{{ .label }}" title="{{ .label }}" rel="me noopener">{{ partial "icon.html" .icon }}</a></li>
+      {{ end }}
+    </ul>
+    <div class="actions">
+      <a class="btn btn--primary" href="#projects">{{ partial "icon.html" "arrow-down" }} View My Work</a>
+      <a class="btn btn--ghost" href="{{ "contact/" | relURL }}">{{ partial "icon.html" "mail" }} Get In Touch</a>
+    </div>
+    <div><a class="scroll-hint" href="#projects" aria-label="Scroll to projects">{{ partial "icon.html" "arrow-down" }}</a></div>
+  </div>
+</section>
+
+{{ with where site.RegularPages "Section" "projects" }}
+<section class="section" id="projects">
+  <div class="wrap">
+    {{ partial "title.html" $.Params.projects }}
+    {{ with $.Params.projects.filters }}
+      <div class="filters" role="group" aria-label="Filter projects">
+        <button type="button" data-filter="*" aria-pressed="true">All</button>
+        {{ range . }}<button type="button" data-filter="{{ . }}" aria-pressed="false">{{ . }}</button>{{ end }}
+      </div>
+    {{ end }}
+    {{ $count := $.Params.projects.count | default 6 }}
+    <ul class="grid">
+      {{ range first $count .ByWeight }}{{ partial "project-card.html" . }}{{ end }}
+    </ul>
+    <p class="empty" hidden>No projects in this group yet.</p>
+    {{ if gt (len .) $count }}
+      <p class="center"><a class="btn btn--ghost" href="{{ (site.GetPage "/projects").RelPermalink }}">Browse all projects</a></p>
+    {{ end }}
+    {{ range where $p.links "icon" "github" }}
+      <p class="center"><a class="btn btn--ghost" href="{{ .url }}" target="_blank" rel="noopener">{{ partial "icon.html" "github" }} More on my GitHub</a></p>
+    {{ end }}
+  </div>
+</section>
+{{ end }}
+
+{{ with hugo.Data.achievements }}
+<section class="section" id="achievements">
+  <div class="wrap">
+    {{ partial "title.html" $.Params.achievements }}
+    <ul class="awards">
+      {{ range . }}
+        <li data-reveal>
+          <article class="award">
+            <p class="award__rank"><span aria-hidden="true">🏆</span> <strong>{{ .rank }}</strong> <span>place</span></p>
+            <h3>{{ .title }}</h3>
+            <p class="award__round">{{ .round }}</p>
+            {{ with .type }}<p class="award__type">{{ . }}</p>{{ end }}
+          </article>
+        </li>
+      {{ end }}
+    </ul>
+  </div>
+</section>
+{{ end }}
+
+{{ with hugo.Data.skills }}
+<section class="section section--alt" id="skills">
+  <div class="wrap">
+    {{ partial "title.html" $.Params.skills }}
+    <div class="stack">
+      {{ range . }}
+        <div class="stack__group" data-reveal>
+          <h3>{{ .name }}</h3>
+          <ul>{{ range .items }}<li>{{ partial "icon.html" (.icon | default "code") }}{{ .name }}</li>{{ end }}</ul>
+        </div>
+      {{ end }}
+    </div>
+  </div>
+</section>
+{{ end }}
+
+{{ with hugo.Data.timeline }}
+<section class="section" id="experience">
+  <div class="wrap">
+    {{ partial "title.html" $.Params.experience }}
+    <div class="columns">
+      {{/* the "Education" column heading is only needed when there is a second column */}}
+      {{ $titleClass := cond (gt (len (.experience | default slice)) 0) "column-title" "sr-only" }}
+      {{ with .education }}<div><h3 class="{{ $titleClass }}">Education</h3>{{ partial "timeline.html" . }}</div>{{ end }}
+      {{ with .experience }}<div><h3 class="column-title">Experience &amp; Activities</h3>{{ partial "timeline.html" . }}</div>{{ end }}
+    </div>
+  </div>
+</section>
+{{ end }}
+
+{{ with where site.RegularPages "Section" "blog" }}
+<section class="section section--alt" id="blog">
+  <div class="wrap">
+    {{ partial "title.html" $.Params.blog }}
+    <ul class="grid">{{ range first 3 .ByDate.Reverse }}{{ partial "post-card.html" . }}{{ end }}</ul>
+    <p class="center"><a class="btn btn--ghost btn--small" href="{{ (site.GetPage "/blog").RelPermalink }}">All posts</a></p>
+  </div>
+</section>
+{{ end }}
+
+<section class="section" id="contact">
+  <div class="wrap narrow contact" data-reveal>
+    <h2>{{ .Params.contact.title }}</h2>
+    <p>{{ .Params.contact.subtitle }}</p>
+    <p>{{ .Params.contact.text }}</p>
+    <div class="actions">
+      <a class="btn btn--primary" href="{{ "contact/" | relURL }}">{{ partial "icon.html" "mail" }} Send me a message</a>
+      {{ range where $p.links "icon" "github" }}
+        <a class="btn btn--ghost" href="{{ .url }}" target="_blank" rel="me noopener">{{ partial "icon.html" "github" }} {{ strings.TrimPrefix "https://" .url }}</a>
+      {{ end }}
+    </div>
+  </div>
+</section>
+
+{{ with .Params.cta }}
+<section class="section section--alt">
+  <div class="wrap">
+    <div class="cta" data-reveal>
+      <h2>{{ .title }}</h2>
+      <p>{{ .text }}</p>
+      <div class="actions">
+        {{ if site.Params.resume }}
+          <a class="btn btn--primary" href="{{ partial "link.html" site.Params.resume }}" target="_blank" rel="noopener">{{ partial "icon.html" "download" }} Download Resume</a>
+        {{ else }}
+          <a class="btn btn--primary" href="{{ "contact/" | relURL }}">{{ partial "icon.html" "mail" }} Contact me</a>
+        {{ end }}
+      </div>
+    </div>
+  </div>
+</section>
+{{ end }}
+{{ end }}

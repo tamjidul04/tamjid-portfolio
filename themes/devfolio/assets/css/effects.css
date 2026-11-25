@@ -1,0 +1,161 @@
+/* Page background, animated network and arrow cursor. Loaded after main.css. */
+
+/* ---------- background ---------- */
+:root {
+  --wash-1: rgba(70, 110, 210, 0.16);
+  --wash-2: rgba(130, 90, 210, 0.11);
+  --wash-3: rgba(40, 160, 130, 0.1);
+  --node: 130, 170, 245;
+  --node-strength: 0.75;
+}
+:root[data-theme="light"] {
+  /* a tinted base, so white cards stand out from the page */
+  --bg: #eef2fb;
+  --bg-alt: rgba(255, 255, 255, 0.5);
+  --card: rgba(255, 255, 255, 0.86);
+  --header: rgba(248, 250, 255, 0.82);
+  --line: #d8deee;
+  --muted: #4a5068;
+  --grid: rgba(45, 75, 150, 0.065);
+  --wash-1: rgba(80, 135, 255, 0.26);
+  --wash-2: rgba(155, 105, 245, 0.2);
+  --wash-3: rgba(35, 190, 160, 0.18);
+  --node: 55, 90, 185;
+  --node-strength: 0.6;
+}
+:root:not([data-theme="light"]) {
+  --bg-alt: rgba(5, 5, 9, 0.55);
+  --header: rgba(23, 26, 33, 0.85);
+}
+
+html { background: var(--bg); }
+body { background: transparent; }
+
+/* colour washes, fixed behind the whole page */
+body::before {
+  content: ""; position: fixed; inset: -12%; z-index: -2; pointer-events: none;
+  background:
+    radial-gradient(ellipse 42% 38% at 14% 18%, var(--wash-1), transparent 100%),
+    radial-gradient(ellipse 38% 42% at 88% 28%, var(--wash-2), transparent 100%),
+    radial-gradient(ellipse 48% 36% at 55% 92%, var(--wash-3), transparent 100%);
+}
+/* fade the hero grid and glows into the next section */
+.hero::before, .hero::after { -webkit-mask-image: linear-gradient(#000 65%, transparent); mask-image: linear-gradient(#000 65%, transparent); }
+.network { position: fixed; inset: 0; z-index: -1; width: 100%; height: 100%; pointer-events: none; }
+
+.site-header { -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+:root[data-theme="light"] .card,
+:root[data-theme="light"] .stack__group,
+:root[data-theme="light"] .timeline article,
+:root[data-theme="light"] .form { box-shadow: 0 0.75rem 2rem rgba(40, 65, 130, 0.09); }
+:root[data-theme="light"] .stack__group li,
+:root[data-theme="light"] .tags li { background: #f4f6fd; }
+:root[data-theme="light"] .site-footer { background: rgba(255, 255, 255, 0.6); }
+/* Popups and the badge need a solid fill */
+:root[data-theme="light"] .search { background: #fff; }
+:root[data-theme="light"] .timeline > li::before { border-color: #fff; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .motion body::before { animation: wash 22s ease-in-out infinite alternate; }
+}
+@keyframes wash {
+  50% { transform: translate3d(3%, 2%, 0) scale(1.06); }
+  100% { transform: translate3d(-3%, -2%, 0) scale(1.02); }
+}
+
+/* ---------- arrow cursor, coloured to match the theme ---------- */
+:root {
+  /* dark mode: white arrow */
+  --cursor-fill: #ffffff;
+  --cursor-edge: #0b0b10;
+  --cursor-hover: #6ea8ff;
+  --cursor-shadow: drop-shadow(0 0 5px rgba(140, 180, 255, 0.55));
+}
+:root[data-theme="light"] {
+  /* light mode: deep navy arrow */
+  --cursor-fill: #141b34;
+  --cursor-edge: #ffffff;
+  --cursor-hover: #2c5fc2;
+  --cursor-shadow: drop-shadow(0 3px 4px rgba(20, 30, 70, 0.35));
+}
+.pointer { position: fixed; top: 0; left: 0; z-index: 100; width: 0; height: 0; pointer-events: none; opacity: 0; }
+/* The offsets and origin put the arrow's point exactly on the mouse position */
+.pointer__arrow { position: absolute; top: -0.2167rem; left: -0.2167rem; width: 1.625rem; height: 1.625rem; overflow: visible; transform-origin: 13.333% 13.333%; fill: var(--cursor-fill); stroke: var(--cursor-edge); stroke-width: 1.4; stroke-linejoin: round; filter: var(--cursor-shadow); }
+
+/* These classes are added by effects.js only for mouse users */
+.has-pointer, .has-pointer * { cursor: none !important; }
+.has-pointer .pointer.is-visible { opacity: 1; }
+.has-pointer .pointer.is-active .pointer__arrow { scale: 1.15; fill: var(--cursor-hover); }
+.has-pointer .pointer.is-down .pointer__arrow { scale: 0.85; }
+/* typing fields keep the normal text cursor */
+.has-pointer :is(input, textarea) { cursor: text !important; }
+.has-pointer .pointer.is-typing { opacity: 0; }
+
+.ripple { position: fixed; z-index: 99; width: 3.5rem; height: 3.5rem; margin: -1.75rem 0 0 -1.75rem; border: 2px solid var(--primary); border-radius: 50%; pointer-events: none; }
+
+/* ---------- scroll progress bar ---------- */
+.progress { position: fixed; top: 0; left: 0; right: 0; z-index: 20; height: 3px; background: linear-gradient(90deg, #4f8cff, #a46bff, #22c1a4); transform-origin: 0 50%; transform: scaleX(0); pointer-events: none; }
+
+/* ---------- extra motion ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .motion .pointer__arrow { transition: scale 0.18s ease, fill 0.18s ease; }
+  .motion .ripple { animation: ripple 0.55s ease-out forwards; }
+
+  /* colour sweeping across the name */
+  .motion .hero h1 { background: linear-gradient(100deg, var(--text) 35%, #4f8cff 45%, #a46bff 52%, #22c1a4 58%, var(--text) 68%) 0 0 / 250% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: rise 0.7s 0.16s both, sweep 7s linear 1s infinite; }
+
+  /* turning gradient ring around the photo */
+  .motion .avatar::before { content: ""; position: absolute; inset: -0.5rem; border-radius: 50%; background: conic-gradient(#4f8cff, #a46bff, #22c1a4, transparent 75%, #4f8cff); -webkit-mask: radial-gradient(closest-side, transparent calc(100% - 3px), #000 calc(100% - 2px)); mask: radial-gradient(closest-side, transparent calc(100% - 3px), #000 calc(100% - 2px)); animation: spin 5s linear infinite; }
+
+  .motion .btn--primary { background-image: linear-gradient(110deg, transparent 35%, rgba(255, 255, 255, 0.35) 50%, transparent 65%); background-size: 250% 100%; animation: sweep 3.5s linear infinite; }
+  .motion .cta { background-size: 200% 200%; animation: pan 10s ease-in-out infinite alternate; }
+
+  /* progress follows the scroll position, in browsers that support it */
+  @supports (animation-timeline: scroll()) {
+    .motion .progress { animation: progress linear; animation-timeline: scroll(root); }
+  }
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes ripple { from { transform: scale(0.2); opacity: 1; } to { transform: scale(1.5); opacity: 0; } }
+@keyframes sweep { from { background-position: 150% 0; } to { background-position: -100% 0; } }
+@keyframes pan { from { background-position: 0% 0%; } to { background-position: 100% 100%; } }
+@keyframes progress { to { transform: scaleX(1); } }
+
+/* circular reveal when switching between dark and light */
+::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+
+/* ---------- every screen size ---------- */
+/* text and spacing grow on very large monitors and TVs */
+html { font-size: clamp(100%, 0.5rem + 0.42vw, 175%); }
+
+/* very narrow phones and folded screens */
+@media (max-width: 22.5rem) {
+  /* a long name wraps onto two lines beside the buttons */
+  .brand { flex: 1 1 0; min-width: 0; font-size: 0.9rem; line-height: 1.25; }
+  .icon-btn { width: 2.5rem; height: 2.5rem; }
+  .actions .btn { width: 100%; }
+  .stack__group ul { gap: 0.5rem; }
+}
+.avatar { width: clamp(9rem, 40vw, 12rem); height: clamp(9rem, 40vw, 12rem); }
+/* the bottom padding stops the colour sweep from cutting off letters like j */
+.hero h1 { overflow-wrap: break-word; line-height: 1.2; padding-bottom: 0.08em; }
+/* lets a long email address wrap inside its button on small phones */
+.contact .btn { max-width: 100%; overflow-wrap: anywhere; }
+
+/* phones held sideways and other short screens */
+@media (max-height: 32rem) and (orientation: landscape) {
+  .site-header { position: static; }
+  .hero { padding-block: 2rem; }
+  .avatar { width: 7rem; height: 7rem; margin-bottom: 1.25rem; }
+  .avatar__img { font-size: 2rem; }
+  .avatar__badge { right: -0.25rem; bottom: 0; width: 2rem; height: 2rem; font-size: 0.95rem; }
+  .scroll-hint { display: none; }
+}
+/* tall desktop screens: the hero fills the first view */
+@media (min-width: 60rem) and (min-height: 62rem) {
+  .hero { display: grid; align-content: center; min-height: calc(100vh - 4rem); }
+}
+
+@media print {
+  .network, .pointer, .progress, .ripple, body::before { display: none; }
+}

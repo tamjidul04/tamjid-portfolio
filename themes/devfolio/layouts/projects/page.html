@@ -1,0 +1,16 @@
+{{ define "main" }}
+<article class="section">
+  <div class="wrap narrow">
+    {{ partial "page-title.html" . }}
+    {{ with .Resources.GetMatch "featured*" }}<div class="banner"><img src="{{ .RelPermalink }}" alt=""></div>{{ end }}
+    <div class="prose">{{ .Content }}</div>
+    {{ if or .Params.github .Params.demo }}
+      <div class="actions actions--left">
+        {{ with .Params.github }}<a class="btn btn--primary" href="{{ . }}" rel="noopener">{{ partial "icon.html" "github" }} View code</a>{{ end }}
+        {{ with .Params.demo }}<a class="btn btn--ghost" href="{{ . }}" rel="noopener">{{ partial "icon.html" "external" }} Live demo</a>{{ end }}
+      </div>
+    {{ end }}
+    <p class="pager"><a href="{{ site.Home.RelPermalink }}#projects">&larr; Back to projects</a></p>
+  </div>
+</article>
+{{ end }}

@@ -1,0 +1,8 @@
+{{ define "main" }}
+<div class="section">
+  <div class="wrap">
+    {{ partial "page-title.html" . }}
+    <ul class="tags tags--links">{{ range .Pages.ByTitle }}<li><a href="{{ .RelPermalink }}">{{ .LinkTitle }} ({{ len .Pages }})</a></li>{{ end }}</ul>
+  </div>
+</div>
+{{ end }}

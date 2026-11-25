@@ -1,0 +1,2 @@
+{{- $icon := resources.Get (printf "icons/%s.svg" .) | default (resources.Get "icons/code.svg") -}}
+<span class="icon icon--{{ . }}" aria-hidden="true">{{ $icon.Content | safeHTML }}</span>

@@ -1,0 +1,6 @@
+{{/* Resolves a config link so it also works when the site lives in a sub-folder. */}}
+{{ $url := . }}
+{{ if not (or (strings.Contains $url "://") (strings.HasPrefix $url "mailto:") (strings.HasPrefix $url "#")) }}
+  {{ $url = strings.TrimPrefix "/" $url | relURL }}
+{{ end }}
+{{ return $url }}

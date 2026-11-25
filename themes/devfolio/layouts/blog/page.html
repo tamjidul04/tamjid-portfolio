@@ -1,0 +1,11 @@
+{{ define "main" }}
+<article class="section">
+  <div class="wrap narrow">
+    {{ partial "page-title.html" . }}
+    <p class="meta">{{ if not .Date.IsZero }}<time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date | time.Format "January 2, 2006" }}</time> &middot; {{ end }}{{ .ReadingTime }} min read</p>
+    {{ with .Resources.GetMatch "featured*" }}<div class="banner"><img src="{{ .RelPermalink }}" alt=""></div>{{ end }}
+    <div class="prose">{{ .Content }}</div>
+    <p class="pager"><a href="{{ .Parent.RelPermalink }}">&larr; All posts</a></p>
+  </div>
+</article>
+{{ end }}

@@ -1,0 +1,11 @@
+name: "Md. Tamjidul Islam"
+initials: "TI"
+avatar: ""          # leave empty: static/me.jpg (or .jpeg, .png, .webp) is used automatically
+badge: "🎓"
+email: "tamjidul.islam04@gmail.com"
+bio: "Computer Science and Engineering student at Daffodil International University who enjoys solving problems and building software. Looking for internships and projects where I can learn by doing."
+links:
+  - { icon: "mail", label: "Email", url: "mailto:tamjidul.islam04@gmail.com" }
+  - { icon: "github", label: "GitHub", url: "https://github.com/tamjidul04" }
+  # To show LinkedIn, remove the # below and add your profile address
+  # - { icon: "linkedin", label: "LinkedIn", url: "https://www.linkedin.com/in/your-id/" }

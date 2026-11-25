@@ -1,0 +1,22 @@
+{{ define "main" }}
+{{ $p := hugo.Data.profile }}
+<div class="contact-page">
+  <div class="wrap contact-page__inner">
+    <header>
+      {{ with .Params.eyebrow }}<p class="contact-page__eyebrow">{{ . }}</p>{{ end }}
+      <h1>{{ .Title }}</h1>
+      <p class="contact-page__lead">{{ .Description }}</p>
+    </header>
+
+    <ul class="contact-card">
+      {{ with $p.email }}
+        <li><a class="contact-card__email" href="mailto:{{ . }}">{{ . }}</a></li>
+        <li><a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to={{ . }}" target="_blank" rel="noopener">Email {{ $.Params.firstName | default $p.name }} through Gmail</a></li>
+      {{ end }}
+      {{ range where $p.links "icon" "github" }}
+        <li><a href="{{ .url }}" target="_blank" rel="me noopener">Visit GitHub profile</a></li>
+      {{ end }}
+    </ul>
+  </div>
+</div>
+{{ end }}

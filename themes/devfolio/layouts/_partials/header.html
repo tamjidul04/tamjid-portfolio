@@ -1,0 +1,20 @@
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="{{ site.Home.RelPermalink }}">{{ hugo.Data.profile.name | default site.Title }}</a>
+    <nav class="nav" id="site-nav" aria-label="Main">
+      <ul>
+        {{ range site.Menus.main }}
+          <li><a href="{{ partial "link.html" .URL }}">{{ .Name }}</a></li>
+        {{ end }}
+      </ul>
+    </nav>
+    <div class="tools">
+      {{ range where hugo.Data.profile.links "icon" "github" }}
+        <a class="tool-link" href="{{ .url }}" target="_blank" rel="me noopener" aria-label="My GitHub profile (opens in a new tab)" title="GitHub">{{ partial "icon.html" "github" }}</a>
+      {{ end }}
+      <button class="icon-btn search-btn" type="button" aria-label="Search">{{ partial "icon.html" "search" }}</button>
+      <button class="icon-btn theme-btn" type="button" aria-label="Switch between dark and light mode">{{ partial "icon.html" "sun" }}{{ partial "icon.html" "moon" }}</button>
+      <button class="icon-btn menu-btn" type="button" aria-label="Menu" aria-controls="site-nav" aria-expanded="false">{{ partial "icon.html" "menu" }}</button>
+    </div>
+  </div>
+</header>

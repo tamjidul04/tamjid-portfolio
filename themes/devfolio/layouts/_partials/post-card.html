@@ -1,0 +1,14 @@
+<li data-reveal>
+  <article class="card">
+    {{ $page := . }}
+    {{ with .Resources.GetMatch "featured*" }}
+      <a class="card__media" href="{{ $page.RelPermalink }}" tabindex="-1" aria-hidden="true"><img src="{{ .RelPermalink }}" alt="" loading="lazy"></a>
+    {{ end }}
+    <div class="card__body">
+      <div class="meta">{{ if not .Date.IsZero }}<time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date | time.Format "Jan 2, 2006" }}</time> &middot; {{ end }}{{ .ReadingTime }} min read</div>
+      <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+      <p>{{ .Description | default (.Summary | plainify | truncate 150) }}</p>
+      {{ with .Params.tags }}<ul class="tags">{{ range . }}<li>{{ . }}</li>{{ end }}</ul>{{ end }}
+    </div>
+  </article>
+</li>

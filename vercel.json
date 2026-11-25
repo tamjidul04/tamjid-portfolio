@@ -2,5 +2,25 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "hugo",
   "buildCommand": "hugo --gc --minify --baseURL \"https://${VERCEL_PROJECT_PRODUCTION_URL}/\"",
-  "outputDirectory": "public"
+  "outputDirectory": "public",
+  "headers": [
+    {
+      "source": "/css/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/js/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ]
 }

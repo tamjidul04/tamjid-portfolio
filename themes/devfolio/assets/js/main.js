@@ -12,7 +12,7 @@
         root.dataset.theme = next;
         try { localStorage.setItem("theme", next); } catch (e) {}
       };
-      if (!motion || !document.startViewTransition) return apply();
+      if (!motion || !document.startViewTransition || root.classList.contains("lite")) return apply();
       // the new theme grows out of the button in a circle
       var box = themeBtn.getBoundingClientRect();
       var x = box.left + box.width / 2;

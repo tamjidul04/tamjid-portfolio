@@ -35,6 +35,8 @@ For a project screenshot, save it as `featured.png` next to the project's `index
 - Resume: copy it to `static/`, then set `resume = "resume.pdf"` in `hugo.toml`.
 - Animations: set `animations = false` to turn them off. They are also off for visitors whose device asks for reduced motion.
 - Background and cursor: set `animatedBackground` or `cursor` to `false` in `hugo.toml`. Colours are at the top of `themes/devfolio/assets/css/effects.css`.
+- Speed: the background draws at 30 frames a second. On very weak or slow devices it holds still ("lite" mode).
+- Cursor: a native cursor image, set at the top of the cursor block in `effects.css`.
 - Skill icons: SVG files in `themes/devfolio/assets/icons/` (brand icons from Devicon, MIT licence).
 
 ## Deploy on Vercel

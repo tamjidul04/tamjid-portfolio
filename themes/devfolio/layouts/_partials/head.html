@@ -10,12 +10,21 @@
 <meta property="og:url" content="{{ .Permalink }}">
 <meta property="og:type" content="{{ cond .IsPage "article" "website" }}">
 {{ with .OutputFormats.Get "rss" }}<link rel="alternate" type="application/rss+xml" href="{{ .RelPermalink }}" title="{{ site.Title }}">{{ end }}
+{{/* fetch the Contact page ahead of time, so it opens quickly */}}
+{{ if .IsHome }}<link rel="prefetch" href="{{ "contact/" | relURL }}">{{ end }}
+{{ if eq .Layout "contact" }}<link rel="preload" href="{{ "fonts/playfair-display.woff2" | relURL }}" as="font" type="font/woff2" crossorigin>{{ end }}
 <link rel="icon" href="{{ "favicon.svg" | relURL }}" type="image/svg+xml">
 
 <script>
   (function () {
     var root = document.documentElement, saved;
     root.classList.add("js");
+    // very weak devices, data saver, or a visit already found to be slow: start in lite mode
+    try {
+      var net = navigator.connection;
+      if ((navigator.hardwareConcurrency || 8) <= 2 || (navigator.deviceMemory || 8) <= 2 ||
+          (net && net.saveData) || sessionStorage.getItem("lite")) root.classList.add("lite");
+    } catch (e) {}
     try { saved = localStorage.getItem("theme"); } catch (e) {}
     if (saved) root.dataset.theme = saved;
   })();

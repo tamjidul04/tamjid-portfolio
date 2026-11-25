@@ -1,7 +1,7 @@
 (function () {
   var root = document.documentElement;
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-  var moving = function () { return root.classList.contains("motion") && !reduced.matches; };
+  var moving = function () { return root.classList.contains("motion") && !reduced.matches && !root.classList.contains("lite"); };
   var rand = function (min, max) { return min + Math.random() * (max - min); };
 
   /* ==========================================================
@@ -56,20 +56,33 @@
       ctx.arc(x, y, r, 0, Math.PI * 2);
     };
 
+    // Lines of similar brightness are collected and drawn in one go.
+    var LEVELS = 4;
+    var batches = [];
     var line = function (a, b, alpha) {
-      ctx.strokeStyle = "rgba(" + colour + "," + alpha + ")";
-      ctx.beginPath();
-      ctx.moveTo(a.x, a.y);
-      ctx.lineTo(b.x, b.y);
-      ctx.stroke();
+      var level = Math.max(0, Math.min(LEVELS - 1, Math.floor((alpha / strength) * LEVELS)));
+      (batches[level] || (batches[level] = [])).push(a, b);
+    };
+    var paintLines = function () {
+      batches.forEach(function (points, level) {
+        if (!points.length) return;
+        ctx.strokeStyle = "rgba(" + colour + "," + ((level + 0.5) / LEVELS) * strength + ")";
+        ctx.beginPath();
+        for (var i = 0; i < points.length; i += 2) {
+          ctx.moveTo(points[i].x, points[i].y);
+          ctx.lineTo(points[i + 1].x, points[i + 1].y);
+        }
+        ctx.stroke();
+        points.length = 0;
+      });
     };
 
     var drawStars = function () {
       stars.forEach(function (s) {
         var glow = 0.2 + 0.65 * Math.abs(Math.sin(s.phase + clock * s.speed));
         ctx.fillStyle = "rgba(220, 232, 255," + glow + ")";
-        circle(s.x, s.y, s.r * scale);
-        ctx.fill();
+        var size = s.r * 1.8 * scale;
+        ctx.fillRect(s.x, s.y, size, size);
       });
     };
 
@@ -142,10 +155,16 @@
           var m = Math.hypot(a.x - mouse.x, a.y - mouse.y);
           if (m < reach) line(a, mouse, (1 - m / reach) * strength);
         }
-        ctx.fillStyle = "rgba(" + colour + "," + strength + ")";
-        circle(a.x, a.y, 1.7 * scale);
-        ctx.fill();
       }
+      paintLines();
+      // all the dots in a single fill
+      ctx.fillStyle = "rgba(" + colour + "," + strength + ")";
+      ctx.beginPath();
+      nodes.forEach(function (n) {
+        ctx.moveTo(n.x + 1.7 * scale, n.y);
+        ctx.arc(n.x, n.y, 1.7 * scale, 0, Math.PI * 2);
+      });
+      ctx.fill();
 
       // pulses of light travelling from one dot to another
       if (step && links.length && packets.length < Math.ceil(nodes.length / 12) && Math.random() < 0.06) {
@@ -177,24 +196,52 @@
       drawNetwork(step);
     };
 
+    var FRAME = 1000 / 30;
+    var previous = 0, watched = 0, ticks = 0, slowSpells = 0, settle = 0;
+
+    var goLite = function () {
+      root.classList.add("lite");
+      try { sessionStorage.setItem("lite", "1"); } catch (e) {}
+      mouse = null;
+      packets = [];
+      draw(0);
+    };
+
+    // If the screen cannot keep up for two spells of 1.5 seconds in a row, switch to lite.
+    var tooSlow = function (time) {
+      var gap = previous ? time - previous : 0;
+      previous = time;
+      if (time < settle || gap <= 0 || gap > 500) return false; // still loading, or the tab was hidden
+      watched += gap;
+      ticks++;
+      if (watched < 1500) return false;
+      slowSpells = watched / ticks > 29 ? slowSpells + 1 : 0;
+      watched = 0;
+      ticks = 0;
+      return slowSpells >= 2;
+    };
+
     var loop = function (time) {
-      // step is 1 at 60fps, so speed is the same on fast and slow screens
-      var elapsed = last ? Math.min(time - last, 50) : 16.7;
+      if (tooSlow(time)) return goLite();
+      frame = requestAnimationFrame(loop);
+      if (last && time - last < FRAME - 2) return; // the background needs no more than 30fps
+      // step is 1 at 60fps, so speed is the same at any frame rate
+      var elapsed = last ? Math.min(time - last, 100) : FRAME;
       last = time;
       clock += elapsed;
       draw(elapsed / 16.7);
-      frame = requestAnimationFrame(loop);
     };
 
     var start = function () {
       cancelAnimationFrame(frame);
-      last = 0;
+      last = previous = watched = ticks = slowSpells = 0;
+      settle = performance.now() + 1500;
       if (moving()) frame = requestAnimationFrame(loop);
       else draw(0); // a still picture when motion is off
     };
 
     var resize = function () {
-      var ratio = Math.min(window.devicePixelRatio || 1, 2);
+      var ratio = 1; // soft background shapes do not need a high-resolution canvas
       width = canvas.clientWidth;
       height = canvas.clientHeight;
       canvas.width = width * ratio;
@@ -205,16 +252,20 @@
       link = Math.max(100, Math.min(width * 0.16, 140)) * scale;
       var area = (width * height) / (scale * scale);
       var count = function (per, max) { return Math.min(Math.round(area / per), max); };
-      fill(nodes, count(15000, 120), makeNode);
-      fill(stars, count(9000, 220), makeStar);
-      fill(floaters, Math.max(8, count(55000, 36)), makeFloater);
+      fill(nodes, count(23000, 64), makeNode);
+      fill(stars, count(15000, 100), makeStar);
+      fill(floaters, Math.max(6, count(80000, 18)), makeFloater);
       packets = [];
       start();
     };
 
     readColours();
     resize();
-    window.addEventListener("resize", resize);
+    var resizeTimer = 0;
+    window.addEventListener("resize", function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(resize, 150);
+    });
     reduced.addEventListener("change", start);
     new MutationObserver(function () {
       readColours();
@@ -228,7 +279,7 @@
   }
 
   /* ---------- click and tap ripple (mouse and touch) ---------- */
-  if (document.querySelector(".pointer")) {
+  if (root.classList.contains("custom-cursor")) {
     var ripple = function (x, y) {
       if (!moving() || document.querySelector(".search[open]")) return;
       var el = document.createElement("span");
@@ -245,32 +296,4 @@
     });
   }
 
-  /* ---------- animated arrow cursor (mouse only) ---------- */
-  var arrow = document.querySelector(".pointer");
-  var finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
-  if (!arrow || !finePointer.matches) return;
-
-  var dialog = document.querySelector(".search");
-
-  var hide = function () {
-    root.classList.remove("has-pointer");
-    arrow.classList.remove("is-visible", "is-down");
-  };
-
-  window.addEventListener("pointermove", function (e) {
-    // The search popup draws above everything, so it uses the normal cursor
-    if (e.pointerType !== "mouse" || (dialog && dialog.open)) return hide();
-    arrow.style.transform = "translate3d(" + e.clientX + "px," + e.clientY + "px,0)";
-    root.classList.add("has-pointer");
-    arrow.classList.add("is-visible");
-    var el = e.target instanceof Element ? e.target : null;
-    arrow.classList.toggle("is-active", !!(el && el.closest("a, button, summary, label")));
-    arrow.classList.toggle("is-typing", !!(el && el.closest("input, textarea")));
-  });
-  window.addEventListener("pointerdown", function () { arrow.classList.add("is-down"); });
-  window.addEventListener("pointerup", function () { arrow.classList.remove("is-down"); });
-  root.addEventListener("pointerleave", hide);
-  window.addEventListener("blur", hide);
-  var searchBtn = document.querySelector(".search-btn");
-  if (searchBtn) searchBtn.addEventListener("click", hide);
 })();

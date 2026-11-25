@@ -253,8 +253,8 @@ section[id] { scroll-margin-top: 4.5rem; }
 .contact-card .contact-card__email { color: var(--text); font-weight: 700; overflow-wrap: anywhere; }
 .contact-card .contact-card__email:hover { color: var(--primary-text); }
 @media (prefers-reduced-motion: no-preference) {
-  .motion .contact-page__inner > * { animation: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
-  .motion .contact-card { animation-delay: 0.15s; }
+  .motion .contact-page__inner > * { animation: rise 0.3s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+  .motion .contact-card { animation-delay: 0.05s; }
   .motion .contact-card a { transition: color 0.2s ease, translate 0.2s ease; }
   .motion .contact-card a:hover { translate: 0.5rem 0; }
 }
@@ -298,7 +298,6 @@ section[id] { scroll-margin-top: 4.5rem; }
   .motion .hero__inner > :nth-child(7) { animation-delay: 0.48s; }
   .motion .hero__inner > :nth-child(8) { animation-delay: 0.56s; }
 
-  .motion .hero::after { animation: drift 14s ease-in-out infinite alternate; }
   .motion .avatar { transition: transform 0.35s ease; }
   .motion .avatar:hover { transform: scale(1.04); }
   .motion .avatar__badge { animation: bob 3s ease-in-out infinite; }
@@ -321,7 +320,6 @@ section[id] { scroll-margin-top: 4.5rem; }
 }
 
 @keyframes rise { from { opacity: 0; translate: 0 1.25rem; } }
-@keyframes drift { to { transform: translate3d(3%, -4%, 0) scale(1.06); } }
 @keyframes bob { 50% { translate: 0 -0.45rem; } }
 @keyframes blink { 50% { opacity: 0; } }
 
